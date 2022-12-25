@@ -19,7 +19,7 @@ export class App extends Component {
         const images = await API.fetchImages(searchQuery, page);
         this.setState({ isLoading: true });
         this.setState(prevState => ({
-          image: [...prevState.images, images.data],
+          images: [...prevState.images, ...images.data],
           isLoading: false,
         }));
       } catch (error) {
