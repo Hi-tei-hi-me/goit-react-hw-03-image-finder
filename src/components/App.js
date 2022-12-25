@@ -37,7 +37,7 @@ export class App extends Component {
     });
   };
   render() {
-    const { images, totalHits, isLoading, error } = this.state;
+    const { images, isLoading, error } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.onSubmit} />
