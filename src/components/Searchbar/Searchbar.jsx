@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { RiSearchEyeLine } from 'react-icons/ri';
 import { Header, SearchForm, SearchBtn, SearchBtnLabel, SearchFormInput } from './Searchbar.styled';
 
@@ -23,20 +24,27 @@ export class Searchbar extends Component {
     searchQuery: '',
   };
   handleChange = evt => {
-    if (evt.target.value.trim() === '') {
-      return;
-    }
     this.setState({ searchQuery: evt.target.value.toLowerCase() });
   };
   handleSubmit = evt => {
     evt.preventDefault();
-    this.props.onSubmit({ ...this.state });
     this.setState({ searchQuery: '' });
+    if (this.state.searchQuery.trim() === '') {
+      toast("You're looking for something weird", {
+        icon: '⚠',
+        style: {
+          background: '#ffd800',
+        },
+      });
+      return;
+    }
+    this.props.onSubmit({ ...this.state });
   };
   render() {
     const { searchQuery } = this.state;
     return (
       <Header>
+        <Toaster position="top-right" reverseOrder={false} />
         <SearchForm onSubmit={this.handleSubmit}>
           <SearchBtn type="submit">
             <SearchBtnLabel>Search</SearchBtnLabel>
