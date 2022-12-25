@@ -12,11 +12,10 @@ export class App extends Component {
     isLoading: false,
     error: null,
   };
-
   async componentDidMount() {
     this.setState({ isLoading: true });
     try {
-      const images = API.fetchImages(this.state.searchQuery);
+      const images = await API.fetchImages(this.state.searchQuery);
       this.setState({ images });
     } catch (error) {
       this.setState({ error });
@@ -24,14 +23,12 @@ export class App extends Component {
       this.setState({ isLoading: false });
     }
   }
-
   onSubmit = data => {
     this.setState({
       searchQuery: data,
       images: [],
     });
   };
-
   render() {
     const { images, totalHits, isLoading, error } = this.state;
     return (

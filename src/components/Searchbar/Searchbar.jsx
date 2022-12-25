@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import { RiSearchEyeLine } from 'react-icons/ri';
 import { Header, SearchForm, SearchBtn, SearchBtnLabel, SearchFormInput } from './Searchbar.styled';
 
@@ -19,34 +20,36 @@ import { Header, SearchForm, SearchBtn, SearchBtnLabel, SearchFormInput } from '
 </header>; */
 }
 
-export const Searchbar = ({ onSubmit }) => {
-  const initialValues = {
+export class Searchbar extends Component {
+  state = {
     searchQuery: '',
   };
-
-  const handleSubmit = value => {
-    if (value.searchQuery.trim() === '') {
-      return;
-    }
-    onSubmit(value.searchQuery.toLowerCase());
+  handleChange = evt => {
+    this.setState({ searchQuery: evt.target.value });
   };
-
-  return (
-    <Header>
-      <SearchForm initialValues={initialValues}>
-        <SearchBtn type="submit" onSubmit={handleSubmit}>
-          <SearchBtnLabel>Search</SearchBtnLabel>
-          <RiSearchEyeLine size={25} />
-        </SearchBtn>
-        <SearchFormInput
-          type="text"
-          name="searchQuery"
-          autoFocus
-          autocomplete="off"
-          id="searchQuery"
-          placeholder="Search images of..."
-        />
-      </SearchForm>
-    </Header>
-  );
-};
+  handleSubmit = evt => {
+    evt.preventDefault();
+    this.props.onSubmit({ ...this.state });
+  };
+  render() {
+    const { searchQuery } = this.state;
+    return (
+      <Header>
+        <SearchForm onSubmit={this.handleSubmit}>
+          <SearchBtn type="submit">
+            <SearchBtnLabel>Search</SearchBtnLabel>
+            <RiSearchEyeLine size={25} />
+          </SearchBtn>
+          <SearchFormInput
+            type="text"
+            autoFocus
+            autocomplete="off"
+            placeholder="Search images of..."
+            value={searchQuery}
+            onChange={this.handleChange}
+          />
+        </SearchForm>
+      </Header>
+    );
+  }
+}

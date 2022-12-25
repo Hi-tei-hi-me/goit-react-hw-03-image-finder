@@ -11,11 +11,9 @@ export const ImageGalleryItem = {
   render() {
     const { webformatURL, largeImageURL } = this.props;
     return (
-      <>
         <GalleryItem>
           <Image src={webformatURL} alt={webformatURL} onClick={this.onOpen} />
         </GalleryItem>
-      </>
     );
   },
 };
