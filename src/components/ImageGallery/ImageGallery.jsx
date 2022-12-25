@@ -2,11 +2,9 @@ import PropTypes from 'prop-types';
 import { GalleryImageList } from './ImageGallery.styled';
 import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
 
-{
-  /* <ul class="gallery">
+/* <ul class="gallery">
   <!-- Набор <li> с изображениями -->
 </ul> */
-}
 
 export const ImageGallery = ({ images }) => {
   return (

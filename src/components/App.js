@@ -12,20 +12,27 @@ export class App extends Component {
     isLoading: false,
     error: null,
   };
-  async componentDidMount() {
-    this.setState({ isLoading: true });
-    try {
-      const images = await API.fetchImages(this.state.searchQuery);
-      this.setState({ images });
-    } catch (error) {
-      this.setState({ error });
-    } finally {
-      this.setState({ isLoading: false });
+  async componentDidUpdate(_, prevState) {
+    const { searchQuery, page } = this.state;
+    if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
+      try {
+        const images = await API.fetchImages(searchQuery, page);
+        this.setState({ isLoading: true });
+        this.setState(prevState => ({
+          image: [...prevState.images, images.data],
+          isLoading: false,
+        }));
+      } catch (error) {
+        this.setState({ isLoading: false });
+        this.setState({ error });
+      } finally {
+        this.setState({ isLoading: false });
+      }
     }
   }
   onSubmit = data => {
     this.setState({
-      searchQuery: data,
+      searchQuery: data.searchQuery,
       images: [],
     });
   };

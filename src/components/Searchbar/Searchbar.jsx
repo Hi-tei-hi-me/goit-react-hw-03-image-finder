@@ -2,8 +2,7 @@ import { Component } from 'react';
 import { RiSearchEyeLine } from 'react-icons/ri';
 import { Header, SearchForm, SearchBtn, SearchBtnLabel, SearchFormInput } from './Searchbar.styled';
 
-{
-  /* <header class="searchbar">
+/* <header class="searchbar">
   <form class="form">
     <button type="submit" class="button">
       <span class="button-label">Search</span>
@@ -18,14 +17,16 @@ import { Header, SearchForm, SearchBtn, SearchBtnLabel, SearchFormInput } from '
     />
   </form>
 </header>; */
-}
 
 export class Searchbar extends Component {
   state = {
     searchQuery: '',
   };
   handleChange = evt => {
-    this.setState({ searchQuery: evt.target.value });
+    if (evt.target.value.trim() === '') {
+      return;
+    }
+    this.setState({ searchQuery: evt.target.value.toLowerCase() });
   };
   handleSubmit = evt => {
     evt.preventDefault();
