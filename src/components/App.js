@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { Toaster } from 'react-hot-toast';
 import * as API from '../data/api';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
@@ -40,6 +41,7 @@ export class App extends Component {
     const { images, isLoading, error } = this.state;
     return (
       <>
+        <Toaster position="top-right" reverseOrder={false} />
         <Searchbar onSubmit={this.onSubmit} />
         {error && <p>Whoops, something went wrong: {error.message}</p>}
         {isLoading && <p>Loading...</p>}

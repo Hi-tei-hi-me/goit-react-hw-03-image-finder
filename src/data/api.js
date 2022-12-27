@@ -16,3 +16,6 @@ export const fetchImages = async (searchQuery, page) => {
   }));
   return { totalHits, data };
 };
+
+// Images that have received an Editor's Choice award:
+// https://pixabay.com/api/?key=${PIXABAY_KEY}&editors_choice=true

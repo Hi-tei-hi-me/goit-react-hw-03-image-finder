@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { RiSearchEyeLine } from 'react-icons/ri';
 import { Header, SearchForm, SearchBtn, SearchBtnLabel, SearchFormInput } from './Searchbar.styled';
 
@@ -44,7 +44,6 @@ export class Searchbar extends Component {
     const { searchQuery } = this.state;
     return (
       <Header>
-        <Toaster position="top-right" reverseOrder={false} />
         <SearchForm onSubmit={this.handleSubmit}>
           <SearchBtn type="submit">
             <SearchBtnLabel>Search</SearchBtnLabel>
