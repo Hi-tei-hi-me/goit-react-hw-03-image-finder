@@ -15,20 +15,28 @@ const INITIAL_STATE = {
 
 export class App extends Component {
   state = { ...INITIAL_STATE };
+  async componentDidMount() {
+    try {
+      this.setState({ isLoading: true });
+      const images = await API.EditorsChoiceImages();
+      this.setState({ images: [...images.data], isLoading: false });
+    } catch (error) {
+      this.setState({ error });
+      this.setState({ isLoading: false });
+    }
+  }
   async componentDidUpdate(_, prevState) {
     const { searchQuery, page } = this.state;
     if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
       try {
-        const images = await API.fetchImages(searchQuery, page);
         this.setState({ isLoading: true });
+        const images = await API.fetchImages(searchQuery, page);
         this.setState(prevState => ({
           images: [...prevState.images, ...images.data],
           isLoading: false,
         }));
       } catch (error) {
-        this.setState({ isLoading: false });
         this.setState({ error });
-      } finally {
         this.setState({ isLoading: false });
       }
     }
@@ -56,13 +64,13 @@ export class App extends Component {
               color: '#fff',
             },
           })}
-        {isLoading && <p>Loading...</p>},
-        {error && (
+        {isLoading && !error && <p>Loading...</p>},
+        {error && !isLoading && (
           <p
             style={{
               margin: '0 auto',
-              width: '95vw',
-              maxWidth: '350px',
+              width: 'max-content',
+              maxWidth: '95vw',
               padding: '20px 40px',
               textAlign: 'center',
               lineHeight: '1.71',
@@ -74,7 +82,7 @@ export class App extends Component {
             Oops! Something's wrong:
             <br />❌ {error.message}
             <br />
-            Please, try refreshing this page
+            Please, refresh this page or try again later
           </p>
         )}
       </>
