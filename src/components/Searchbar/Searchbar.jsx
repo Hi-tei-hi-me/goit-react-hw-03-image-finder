@@ -30,10 +30,10 @@ export class Searchbar extends Component {
     evt.preventDefault();
     this.setState({ searchQuery: '' });
     if (this.state.searchQuery.trim() === '') {
-      toast("You're looking for something weird", {
+      toast('You should enter keyword if you want to find something', {
         icon: '⚠',
         style: {
-          background: '#ffd800',
+          background: '#f3dc5d',
         },
       });
       return;

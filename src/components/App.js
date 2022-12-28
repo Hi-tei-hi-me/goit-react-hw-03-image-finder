@@ -1,18 +1,20 @@
 import { Component } from 'react';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import * as API from '../data/api';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 
+const INITIAL_STATE = {
+  searchQuery: '',
+  images: [],
+  page: 1,
+  totalHits: null,
+  isLoading: false,
+  error: null,
+};
+
 export class App extends Component {
-  state = {
-    searchQuery: '',
-    images: [],
-    page: 1,
-    totalHits: null,
-    isLoading: false,
-    error: null,
-  };
+  state = { ...INITIAL_STATE };
   async componentDidUpdate(_, prevState) {
     const { searchQuery, page } = this.state;
     if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
@@ -43,9 +45,38 @@ export class App extends Component {
       <>
         <Toaster position="top-right" reverseOrder={false} />
         <Searchbar onSubmit={this.onSubmit} />
-        {error && <p>Whoops, something went wrong: {error.message}</p>}
-        {isLoading && <p>Loading...</p>}
-        {images.length > 0 && <ImageGallery images={images} />}
+        {images.length > 0 && !isLoading && <ImageGallery images={images} />}
+        {images.length === 0 &&
+          !isLoading &&
+          !error &&
+          toast(`Sorry, we couldn't find anything`, {
+            icon: '☹',
+            style: {
+              background: '#4a81e8',
+              color: '#fff',
+            },
+          })}
+        {isLoading && <p>Loading...</p>},
+        {error && (
+          <p
+            style={{
+              margin: '0 auto',
+              width: '95vw',
+              maxWidth: '350px',
+              padding: '20px 40px',
+              textAlign: 'center',
+              lineHeight: '1.71',
+              backgroundColor: '#aa3939',
+              color: '#ffaaaa',
+              border: '1.5px solid #801515',
+              borderRadius: '10px',
+            }}>
+            Oops! Something's wrong:
+            <br />❌ {error.message}
+            <br />
+            Please, try refreshing this page
+          </p>
+        )}
       </>
     );
   }
