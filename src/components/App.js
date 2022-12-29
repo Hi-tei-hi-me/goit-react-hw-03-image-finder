@@ -3,6 +3,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import * as API from '../data/api';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Button } from './Button/Button';
 
 const INITIAL_STATE = {
   searchQuery: '',
@@ -10,7 +11,7 @@ const INITIAL_STATE = {
   page: 1,
   totalHits: null,
   isLoading: false,
-  error: null,
+  error: false,
 };
 
 export class App extends Component {
@@ -19,7 +20,11 @@ export class App extends Component {
     try {
       this.setState({ isLoading: true });
       const images = await API.EditorsChoiceImages();
-      this.setState({ images: [...images.data], isLoading: false });
+      this.setState({
+        images: [...images.data],
+        totalHits: images.totalHits,
+        isLoading: false,
+      });
     } catch (error) {
       this.setState({ error });
       this.setState({ isLoading: false });
@@ -33,6 +38,7 @@ export class App extends Component {
         const images = await API.fetchImages(searchQuery, page);
         this.setState(prevState => ({
           images: [...prevState.images, ...images.data],
+          totalHits: images.totalHits,
           isLoading: false,
         }));
       } catch (error) {
@@ -47,13 +53,24 @@ export class App extends Component {
       images: [],
     });
   };
+  loadMore = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
+  };
   render() {
-    const { images, isLoading, error } = this.state;
+    const { images, totalHits, page, isLoading, error } = this.state;
+    const totalPages = totalHits / 12;
     return (
       <>
         <Toaster position="top-right" reverseOrder={false} />
         <Searchbar onSubmit={this.onSubmit} />
-        {images.length > 0 && !isLoading && <ImageGallery images={images} />}
+        {images.length > 0 && !isLoading && (
+          <>
+            <ImageGallery images={images} />
+            {totalPages > page && <Button onClick={this.loadMore} />}
+          </>
+        )}
         {images.length === 0 &&
           !isLoading &&
           !error &&
@@ -64,11 +81,11 @@ export class App extends Component {
               color: '#fff',
             },
           })}
-        {isLoading && !error && <p>Loading...</p>},
+        {isLoading && !error && <p>Loading...</p>}
         {error && !isLoading && (
           <p
             style={{
-              margin: '0 auto',
+              margin: '40px auto',
               width: 'max-content',
               maxWidth: '95vw',
               padding: '20px 40px',
