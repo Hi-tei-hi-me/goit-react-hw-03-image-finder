@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { GalleryItem, Image } from './ImageGalleryItem.styled';
+import { Modal } from 'components/Modal/Modal';
 
 /* <li class="gallery-item">
 <img src="" alt="" />

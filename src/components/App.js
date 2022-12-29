@@ -1,9 +1,11 @@
 import { Component } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import * as API from '../data/api';
+import { AppWrap } from './Wrapper/AppWrap.styled';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
+import { Loader } from './Loader/Loader';
 
 const INITIAL_STATE = {
   searchQuery: '',
@@ -28,6 +30,8 @@ export class App extends Component {
     } catch (error) {
       this.setState({ error });
       this.setState({ isLoading: false });
+    } finally {
+      this.setState({ isLoading: false });
     }
   }
   async componentDidUpdate(_, prevState) {
@@ -43,6 +47,8 @@ export class App extends Component {
         }));
       } catch (error) {
         this.setState({ error });
+        this.setState({ isLoading: false });
+      } finally {
         this.setState({ isLoading: false });
       }
     }
@@ -64,12 +70,14 @@ export class App extends Component {
     return (
       <>
         <Toaster position="top-right" reverseOrder={false} />
-        <Searchbar onSubmit={this.onSubmit} />
+        <AppWrap>
+          <Searchbar onSubmit={this.onSubmit} />
+        </AppWrap>
         {images.length > 0 && !isLoading && (
-          <>
+          <AppWrap>
             <ImageGallery images={images} />
             {totalPages > page && <Button onClick={this.loadMore} />}
-          </>
+          </AppWrap>
         )}
         {images.length === 0 &&
           !isLoading &&
@@ -81,7 +89,7 @@ export class App extends Component {
               color: '#fff',
             },
           })}
-        {isLoading && !error && <p>Loading...</p>}
+        {isLoading && !error && <Loader />}
         {error && !isLoading && (
           <p
             style={{
