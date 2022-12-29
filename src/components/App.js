@@ -57,6 +57,7 @@ export class App extends Component {
     this.setState({
       searchQuery: data.searchQuery,
       images: [],
+      page: 1,
     });
   };
   loadMore = () => {

@@ -1,3 +1,4 @@
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { GalleryItem, Image } from './ImageGalleryItem.styled';
 import { Modal } from 'components/Modal/Modal';
@@ -6,13 +7,33 @@ import { Modal } from 'components/Modal/Modal';
 <img src="" alt="" />
 </li>; */
 
-export const ImageGalleryItem = ({ webformatURL, largeImageURL }) => {
-  return (
-    <GalleryItem>
-      <Image src={webformatURL} alt={webformatURL} />
-    </GalleryItem>
-  );
-};
+export class ImageGalleryItem extends Component {
+  static defaultProps = {
+    webformatURL: '',
+    largeImageURL: '',
+  };
+  state = {
+    isModalOpen: false,
+  };
+  modalOpen = () => {
+    this.setState({ isModalOpen: true });
+  };
+  modalClose = () => {
+    this.setState({ isModalOpen: false });
+  };
+  render() {
+    const { webformatURL, largeImageURL } = this.props;
+    const { isModalOpen } = this.state;
+    return (
+      <>
+        <GalleryItem>
+          <Image src={webformatURL} alt={webformatURL} onClick={this.modalOpen} />
+        </GalleryItem>
+        {isModalOpen && <Modal url={largeImageURL} onEsc={this.modalClose} />}
+      </>
+    );
+  }
+}
 
 ImageGalleryItem.propTypes = {
   webformatURL: PropTypes.string.isRequired,
