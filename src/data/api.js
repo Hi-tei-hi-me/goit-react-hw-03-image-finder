@@ -6,7 +6,7 @@ axios.defaults.baseURL = 'https://pixabay.com/api';
 
 // Images that have received an Editor's Choice award:
 // https://pixabay.com/api/?key=${PIXABAY_KEY}&editors_choice=true
-export const EditorsChoiceImages = async page => {
+export const EditorsChoiceImages = async (page = 1) => {
   const response = await axios.get(
     `/?key=${PIXABAY_KEY}&editors_choice=true&page=${page}&per_page=12`
   );

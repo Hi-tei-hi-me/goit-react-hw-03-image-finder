@@ -74,7 +74,7 @@ export class App extends Component {
         <AppWrap>
           <Searchbar onSubmit={this.onSubmit} />
         </AppWrap>
-        {images.length > 0 && !isLoading && (
+        {images.length > 0 && (
           <AppWrap>
             <ImageGallery images={images} />
             {totalPages > page && <Button onClick={this.loadMore} />}
