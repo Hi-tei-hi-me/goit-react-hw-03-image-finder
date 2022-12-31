@@ -24,12 +24,12 @@ export class Searchbar extends Component {
     searchQuery: '',
   };
   handleChange = evt => {
-    this.setState({ searchQuery: evt.target.value.toLowerCase() });
+    this.setState({ searchQuery: evt.target.value });
   };
   handleSubmit = evt => {
     evt.preventDefault();
-    this.setState({ searchQuery: '' });
-    if (this.state.searchQuery.trim() === '') {
+    const searchQuery = this.state.searchQuery.trim().toLowerCase();
+    if (!searchQuery) {
       toast('You should enter keyword if you want to find something', {
         icon: '⚠',
         style: {
@@ -39,6 +39,7 @@ export class Searchbar extends Component {
       return;
     }
     this.props.onSubmit({ ...this.state });
+    this.setState({ searchQuery: '' });
   };
   render() {
     const { searchQuery } = this.state;

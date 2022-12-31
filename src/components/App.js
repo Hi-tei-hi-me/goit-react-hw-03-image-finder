@@ -6,6 +6,7 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
+import { Error } from './Error/Error';
 
 const INITIAL_STATE = {
   searchQuery: '',
@@ -13,7 +14,7 @@ const INITIAL_STATE = {
   page: 1,
   totalHits: null,
   isLoading: false,
-  error: false,
+  error: '',
 };
 
 export class App extends Component {
@@ -25,11 +26,9 @@ export class App extends Component {
       this.setState({
         images: [...images.data],
         totalHits: images.totalHits,
-        isLoading: false,
       });
     } catch (error) {
-      this.setState({ error });
-      this.setState({ isLoading: false });
+      this.setState({ error: error.message });
     } finally {
       this.setState({ isLoading: false });
     }
@@ -38,24 +37,44 @@ export class App extends Component {
     const { searchQuery, page } = this.state;
     if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
       try {
-        this.setState({ isLoading: true });
+        this.setState({ isLoading: true, error: '' });
         const images = await API.fetchImages(searchQuery, page);
+        if (!images.data.length) {
+          toast(`Sorry, we couldn't find any ${searchQuery}`, {
+            icon: '☹',
+            style: {
+              background: '#4a81e8',
+              color: '#fff',
+            },
+          });
+        }
         this.setState(prevState => ({
           images: [...prevState.images, ...images.data],
           totalHits: images.totalHits,
-          isLoading: false,
         }));
       } catch (error) {
-        this.setState({ error });
-        this.setState({ isLoading: false });
+        this.setState({ error: error.message });
       } finally {
         this.setState({ isLoading: false });
       }
     }
   }
-  onSubmit = data => {
+  onSubmit = ({ searchQuery }) => {
+    if (searchQuery === this.state.searchQuery) {
+      toast(
+        `There are no another ${searchQuery} images for you, but you can try to find something else`,
+        {
+          icon: '🤷',
+          style: {
+            background: '#de6a0a',
+            color: '#fff',
+          },
+        }
+      );
+      return;
+    }
     this.setState({
-      searchQuery: data.searchQuery,
+      searchQuery,
       images: [],
       page: 1,
     });
@@ -74,43 +93,14 @@ export class App extends Component {
         <AppWrap>
           <Searchbar onSubmit={this.onSubmit} />
         </AppWrap>
+        {isLoading && <Loader />}
         {images.length > 0 && (
           <AppWrap>
             <ImageGallery images={images} />
             {totalPages > page && <Button onClick={this.loadMore} />}
           </AppWrap>
         )}
-        {images.length === 0 &&
-          !isLoading &&
-          !error &&
-          toast(`Sorry, we couldn't find anything`, {
-            icon: '☹',
-            style: {
-              background: '#4a81e8',
-              color: '#fff',
-            },
-          })}
-        {isLoading && !error && <Loader />}
-        {error && !isLoading && (
-          <p
-            style={{
-              margin: '40px auto',
-              width: 'max-content',
-              maxWidth: '95vw',
-              padding: '20px 40px',
-              textAlign: 'center',
-              lineHeight: '1.71',
-              backgroundColor: '#aa3939',
-              color: '#ffaaaa',
-              border: '1.5px solid #801515',
-              borderRadius: '10px',
-            }}>
-            Oops! Something's wrong:
-            <br />❌ {error.message}
-            <br />
-            Please, refresh this page or try again later
-          </p>
-        )}
+        {error && <Error textError={error} />}
       </>
     );
   }
