@@ -27,6 +27,13 @@ export class App extends Component {
         images: [...images.data],
         totalHits: images.totalHits,
       });
+      toast(`Look how many cool pics our editors have chosen for you!`, {
+        icon: '⚝',
+        style: {
+          background: '#AA5585',
+          color: '#fff',
+        },
+      });
     } catch (error) {
       this.setState({ error: error.message });
     } finally {
@@ -52,6 +59,15 @@ export class App extends Component {
           images: [...prevState.images, ...images.data],
           totalHits: images.totalHits,
         }));
+        if (images.data.length !== 0) {
+          toast(`Hooray! We have found ${images.totalHits} photos of ${searchQuery}`, {
+            icon: '✓',
+            style: {
+              background: '#537D43',
+              color: '#fff',
+            },
+          });
+        }
       } catch (error) {
         this.setState({ error: error.message });
       } finally {
@@ -64,7 +80,7 @@ export class App extends Component {
       toast(
         `There are no another ${searchQuery} images for you, but you can try to find something else`,
         {
-          icon: '🤷',
+          icon: '👀',
           style: {
             background: '#de6a0a',
             color: '#fff',
