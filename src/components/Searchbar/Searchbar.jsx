@@ -1,7 +1,7 @@
 import { Component } from 'react';
-import toast from 'react-hot-toast';
 import { RiSearchEyeLine } from 'react-icons/ri';
 import { Header, SearchForm, SearchBtn, SearchBtnLabel, SearchFormInput } from './Searchbar.styled';
+import { showToast } from 'utils/toaster';
 
 /* <header class="searchbar">
   <form class="form">
@@ -30,12 +30,7 @@ export class Searchbar extends Component {
     evt.preventDefault();
     const searchQuery = this.state.searchQuery.trim().toLowerCase();
     if (!searchQuery) {
-      toast('You should enter keyword if you want to find something', {
-        icon: '⚠',
-        style: {
-          background: '#f3dc5d',
-        },
-      });
+      showToast('You should enter keyword if you want to find something', 'incorrectQuery');
       return;
     }
     this.props.onSubmit({ ...this.state });

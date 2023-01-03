@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import * as API from '../data/api';
 import { AppWrap } from './Wrapper/AppWrap.styled';
 import { Searchbar } from './Searchbar/Searchbar';
@@ -7,6 +7,7 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
 import { Error } from './Error/Error';
+import { showToast } from 'utils/toaster';
 
 const INITIAL_STATE = {
   searchQuery: '',
@@ -27,13 +28,7 @@ export class App extends Component {
         images: [...images.data],
         totalHits: images.totalHits,
       });
-      toast(`Look how many cool pics our editors have chosen for you!`, {
-        icon: '⚝',
-        style: {
-          background: '#AA5585',
-          color: '#fff',
-        },
-      });
+      showToast('Look how many cool pics our editors have chosen for you!', 'editorsChoice');
     } catch (error) {
       this.setState({ error: error.message });
     } finally {
@@ -47,27 +42,16 @@ export class App extends Component {
         this.setState({ isLoading: true, error: '' });
         const images = await API.fetchImages(searchQuery, page);
         if (!images.data.length) {
-          toast(`Sorry, we couldn't find any ${searchQuery}`, {
-            icon: '☹',
-            style: {
-              background: '#4a81e8',
-              color: '#fff',
-            },
-          });
+          showToast(`Sorry, we couldn't find any ${searchQuery}`, 'nothingFound');
+          return;
+        }
+        if (images.data.length && page === 1) {
+          showToast(`Hooray! We have found ${images.totalHits} photos of ${searchQuery}`, 'found');
         }
         this.setState(prevState => ({
           images: [...prevState.images, ...images.data],
           totalHits: images.totalHits,
         }));
-        if (images.data.length !== 0) {
-          toast(`Hooray! We have found ${images.totalHits} photos of ${searchQuery}`, {
-            icon: '✓',
-            style: {
-              background: '#537D43',
-              color: '#fff',
-            },
-          });
-        }
       } catch (error) {
         this.setState({ error: error.message });
       } finally {
@@ -77,15 +61,9 @@ export class App extends Component {
   }
   onSubmit = ({ searchQuery }) => {
     if (searchQuery === this.state.searchQuery) {
-      toast(
+      showToast(
         `There are no another ${searchQuery} images for you, but you can try to find something else`,
-        {
-          icon: '👀',
-          style: {
-            background: '#de6a0a',
-            color: '#fff',
-          },
-        }
+        'repeatedQuery'
       );
       return;
     }
